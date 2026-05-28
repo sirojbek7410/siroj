@@ -1,135 +1,781 @@
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dollar Kurs UZS</title>
-
+<title>Siroj Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-body{
-    margin:0;
-    padding:0;
-    background:#050505;
-    font-family:Arial,sans-serif;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07070f;
+  --card:#0f0f1a;
+  --card2:#161624;
+  --border:#1e1e30;
+  --border2:#2a2a3e;
+  --accent:#6c5fff;
+  --accent2:#00c9a7;
+  --accent3:#ff5f7e;
+  --accent4:#ffa940;
+  --text:#ece9ff;
+  --muted:#6b6b8a;
+  --muted2:#9898b8;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* BG effects */
+.bg-orbs{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.18}
+.orb1{width:600px;height:600px;background:#6c5fff;top:-200px;left:-200px}
+.orb2{width:500px;height:500px;background:#00c9a7;bottom:-100px;right:-100px}
+.orb3{width:300px;height:300px;background:#ff5f7e;top:50%;left:50%;transform:translate(-50%,-50%)}
+.grid-bg{
+  position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);
+  background-size:50px 50px;
+}
+.noise{
+  position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px 200px;
 }
 
-.container{
-    width:350px;
-    background:#0f0f0f;
-    border:1px solid #1f1f1f;
-    border-radius:20px;
-    padding:25px;
-    box-shadow:0 0 25px rgba(0,255,255,0.2);
-}
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 24px 60px}
 
-h1{
-    text-align:center;
-    color:#00ffff;
-    margin-bottom:25px;
-}
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:24px 0;border-bottom:1px solid var(--border);margin-bottom:80px}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.5px}
+.nav-logo .dot{color:var(--accent)}
+.nav-links{display:flex;gap:32px}
+.nav-links a{font-size:14px;color:var(--muted2);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--text)}
+.nav-btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:9px 20px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:opacity 0.2s}
+.nav-btn:hover{opacity:0.85}
 
-.card{
-    background:#141414;
-    border-radius:15px;
-    padding:15px;
-    margin-bottom:15px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    transition:0.3s;
-    border:1px solid #222;
+/* HERO */
+.hero{text-align:center;padding:0 0 80px}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(108,95,255,0.1);border:1px solid rgba(108,95,255,0.25);
+  border-radius:100px;padding:7px 18px;font-size:12px;color:#a99fff;
+  margin-bottom:32px;letter-spacing:1px;text-transform:uppercase;font-weight:500
 }
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2.4rem,6vw,4rem);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:20px}
+.g1{background:linear-gradient(120deg,#fff 0%,#c4bbff 50%,#6c5fff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.g2{background:linear-gradient(120deg,#00c9a7,#7fffd4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:17px;color:var(--muted2);max-width:500px;margin:0 auto 40px;line-height:1.65;font-weight:300}
 
-.card:hover{
-    transform:scale(1.03);
-    box-shadow:0 0 15px rgba(0,255,255,0.3);
+/* SEARCH */
+.search-wrap{max-width:460px;margin:0 auto 80px;position:relative}
+.search-wrap input{
+  width:100%;background:var(--card);border:1px solid var(--border2);
+  border-radius:14px;padding:14px 20px 14px 48px;
+  font-size:15px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;
+  transition:border-color 0.25s,background 0.25s
 }
+.search-wrap input:focus{border-color:var(--accent);background:var(--card2)}
+.search-wrap input::placeholder{color:var(--muted)}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 
-.left{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:20px;
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:60px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;text-align:center;position:relative;overflow:hidden}
+.stat::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent)}
+.stat-n{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;margin-bottom:4px}
+.stat-l{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.sn1{background:linear-gradient(135deg,#6c5fff,#b0a8ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sn2{background:linear-gradient(135deg,#00c9a7,#7fffd4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sn3{background:linear-gradient(135deg,#ffa940,#ffd666);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* SECTION */
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.sec-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:500}
+.sec-line{flex:1;height:1px;background:var(--border)}
+
+/* TOOLS GRID */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-bottom:60px}
+.tool-card{
+  background:var(--card);border:1px solid var(--border);border-radius:22px;
+  padding:26px;cursor:pointer;transition:transform 0.25s,border-color 0.25s,background 0.25s;
+  position:relative;overflow:hidden
 }
-
-.currency{
-    font-weight:bold;
+.tool-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.07),transparent)
 }
-
-.rate{
-    color:#00ff99;
-    font-size:18px;
+.tool-card:hover{transform:translateY(-5px);border-color:rgba(108,95,255,0.35);background:var(--card2)}
+.glow{
+  position:absolute;top:-50px;right:-50px;width:130px;height:130px;
+  border-radius:50%;opacity:0;transition:opacity 0.3s;pointer-events:none;filter:blur(35px)
 }
+.tool-card:hover .glow{opacity:1}
 
-.update{
-    text-align:center;
-    color:gray;
-    margin-top:10px;
-    font-size:13px;
+.t-icon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;position:relative;z-index:1}
+.tool-card h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:7px;position:relative;z-index:1;letter-spacing:-0.3px}
+.tool-card p{font-size:13px;color:var(--muted2);line-height:1.5;position:relative;z-index:1;font-weight:300}
+.t-tag{display:inline-block;font-size:10px;padding:3px 10px;border-radius:100px;margin-top:14px;letter-spacing:1px;font-weight:600;text-transform:uppercase;position:relative;z-index:1}
+.t-arrow{position:absolute;bottom:20px;right:20px;opacity:0;transition:opacity 0.2s,transform 0.2s;z-index:1}
+.tool-card:hover .t-arrow{opacity:1;transform:translate(2px,-2px)}
+
+.cp{--c:#6c5fff;--cb:rgba(108,95,255,0.12)}
+.ct{--c:#00c9a7;--cb:rgba(0,201,167,0.12)}
+.ca{--c:#ffa940;--cb:rgba(255,169,64,0.12)}
+.cb{--c:#4d9fff;--cb:rgba(77,159,255,0.12)}
+.cr{--c:#ff5f7e;--cb:rgba(255,95,126,0.12)}
+.cg{--c:#52c41a;--cb:rgba(82,196,26,0.12)}
+
+.t-icon{background:var(--cb);color:var(--c)}
+.glow{background:var(--c)}
+.t-tag{background:var(--cb);color:var(--c)}
+
+/* ACTIVE TOOL PANEL */
+.tool-panel{
+  background:var(--card);border:1px solid var(--border2);border-radius:24px;
+  padding:36px;margin-bottom:60px;display:none;position:relative
+}
+.tool-panel.active{display:block;animation:slideIn 0.3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.panel-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.5px}
+.panel-close{background:var(--card2);border:1px solid var(--border2);color:var(--muted2);width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.panel-close:hover{color:var(--text);border-color:var(--border)}
+
+/* INPUTS */
+.field{margin-bottom:18px}
+.field label{display:block;font-size:12px;color:var(--muted2);margin-bottom:7px;letter-spacing:0.5px;text-transform:uppercase;font-weight:500}
+input,textarea,select{
+  width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:12px;
+  padding:12px 16px;font-size:15px;color:var(--text);font-family:'DM Sans',sans-serif;
+  outline:none;transition:border-color 0.2s;-webkit-appearance:none
+}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+select option{background:#1a1a2e}
+textarea{resize:vertical;min-height:100px;line-height:1.5}
+.btn{
+  background:var(--accent);color:#fff;border:none;border-radius:12px;
+  padding:12px 24px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;
+  cursor:pointer;transition:opacity 0.2s,transform 0.1s;display:inline-block
+}
+.btn:hover{opacity:0.88}
+.btn:active{transform:scale(0.98)}
+.btn-ghost{background:var(--card2);color:var(--text);border:1px solid var(--border2)}
+.btn-ghost:hover{border-color:var(--accent);opacity:1}
+.btn-sm{padding:8px 16px;font-size:13px;border-radius:10px}
+
+.result-box{
+  background:rgba(108,95,255,0.06);border:1px solid rgba(108,95,255,0.2);
+  border-radius:14px;padding:18px 20px;margin-top:16px;
+  font-size:16px;font-weight:500;color:var(--text);word-break:break-all;line-height:1.6;min-height:56px
+}
+.result-box.success{background:rgba(0,201,167,0.06);border-color:rgba(0,201,167,0.2)}
+.result-box.danger{background:rgba(255,95,126,0.06);border-color:rgba(255,95,126,0.2)}
+.copy-btn{margin-top:10px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.range-val{font-family:'Syne',sans-serif;font-size:14px;color:var(--accent);font-weight:700}
+input[type=range]{padding:0;background:none;border:none;border-radius:0;cursor:pointer;height:6px;accent-color:var(--accent)}
+
+/* CALC */
+.calc-display{
+  background:var(--card2);border:1px solid var(--border2);border-radius:14px;
+  padding:20px;text-align:right;margin-bottom:14px
+}
+.calc-expr{font-size:13px;color:var(--muted);min-height:20px}
+.calc-num{font-family:'Syne',sans-serif;font-size:34px;font-weight:700;word-break:break-all}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.c-btn{
+  background:var(--card2);border:1px solid var(--border);border-radius:12px;
+  padding:0;height:56px;font-size:16px;color:var(--text);font-family:'Syne',sans-serif;font-weight:600;
+  cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center
+}
+.c-btn:hover{background:var(--card);border-color:var(--border2)}
+.c-btn:active{transform:scale(0.95)}
+.c-btn.op{color:var(--accent)}
+.c-btn.eq{background:var(--accent);border-color:var(--accent);color:#fff}
+.c-btn.eq:hover{opacity:0.88}
+.c-btn.clear{color:var(--accent3)}
+
+/* PASSWORD */
+.pw-checks{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.pw-check{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted2);cursor:pointer;user-select:none}
+.pw-check input[type=checkbox]{width:auto;padding:0;margin:0;accent-color:var(--accent);cursor:pointer}
+.strength-bar{height:4px;border-radius:2px;background:var(--border2);overflow:hidden;margin-top:12px}
+.strength-fill{height:100%;border-radius:2px;transition:width 0.3s,background 0.3s}
+
+/* BMI */
+.bmi-result-big{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;text-align:center;margin:16px 0 4px}
+.bmi-label{text-align:center;font-size:14px;font-weight:500;margin-bottom:16px}
+.bmi-scale{height:8px;border-radius:4px;background:linear-gradient(90deg,#52c41a,#ffa940,#ff5f7e,#ff0000);margin:8px 0;position:relative}
+.bmi-pointer{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid var(--accent);transform:translateX(-50%);transition:left 0.5s}
+
+/* COLOR */
+.color-preview{width:100%;height:80px;border-radius:14px;border:1px solid var(--border2);margin-bottom:16px;transition:background 0.3s}
+.color-swatches{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.swatch{width:36px;height:36px;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:transform 0.15s,border-color 0.15s}
+.swatch:hover{transform:scale(1.1)}
+
+/* QR */
+#qr-output{display:flex;justify-content:center;align-items:center;min-height:180px}
+#qr-output canvas,#qr-output img{border-radius:12px;max-width:180px}
+
+/* AGE */
+.age-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.age-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.age-card-n{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--accent)}
+.age-card-l{font-size:12px;color:var(--muted2);margin-top:4px}
+
+/* TRANSLATE */
+.lang-row{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:end;margin-bottom:14px}
+.swap-btn{background:var(--card2);border:1px solid var(--border2);color:var(--muted2);width:40px;height:48px;border-radius:12px;cursor:pointer;font-size:18px;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
+.swap-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:36px 0 0;text-align:center}
+.footer-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;letter-spacing:-0.5px;margin-bottom:8px}
+.footer-logo .dot{color:var(--accent)}
+.footer-links{display:flex;justify-content:center;gap:24px;margin:16px 0}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--text)}
+.footer-copy{font-size:13px;color:var(--muted);margin-top:12px;padding-bottom:32px}
+.footer-made{font-size:12px;color:var(--muted);margin-top:6px;padding-bottom:0}
+.footer-made span{color:var(--accent)}
+
+/* ANIM */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hero{animation:fadeUp 0.5s ease both}
+.stats{animation:fadeUp 0.5s 0.1s ease both}
+.tools-grid .tool-card:nth-child(1){animation:fadeUp 0.4s 0.1s both}
+.tools-grid .tool-card:nth-child(2){animation:fadeUp 0.4s 0.15s both}
+.tools-grid .tool-card:nth-child(3){animation:fadeUp 0.4s 0.2s both}
+.tools-grid .tool-card:nth-child(4){animation:fadeUp 0.4s 0.25s both}
+.tools-grid .tool-card:nth-child(5){animation:fadeUp 0.4s 0.3s both}
+.tools-grid .tool-card:nth-child(6){animation:fadeUp 0.4s 0.35s both}
+.tools-grid .tool-card:nth-child(7){animation:fadeUp 0.4s 0.4s both}
+.tools-grid .tool-card:nth-child(8){animation:fadeUp 0.4s 0.45s both}
+
+@media(max-width:600px){
+  .row2,.row3{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr 1fr}
+  .age-cards{grid-template-columns:1fr 1fr 1fr}
+  .lang-row{grid-template-columns:1fr auto 1fr}
+  nav{gap:12px}.nav-links{display:none}
 }
 </style>
 </head>
-
 <body>
+<div class="bg-orbs"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
+<div class="grid-bg"></div>
+<div class="noise"></div>
 
-<div class="container">
-    <h1>💵 Valyuta Kurslari</h1>
-
-    <div id="rates"></div>
-
-    <div class="update">
-        24/7 avtomatik yangilanadi
+<div class="wrap">
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Siroj<span class="dot">.</span>Tools</div>
+    <div class="nav-links">
+      <a href="#">Bosh sahifa</a>
+      <a href="#">Vositalar</a>
+      <a href="#">Haqida</a>
     </div>
+    <button class="nav-btn" onclick="scrollToTools()">Boshlash →</button>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge"><span class="badge-dot"></span>Bepul · Reklamsiz · O'zbekcha</div>
+    <h1><span class="g1">Siroj</span> <span class="g2">Tools</span></h1>
+    <p>Har kuni kerak bo'ladigan onlayn vositalar — tarjimon, kalkulyator, parol generator va yana ko'plar. Tez, bepul va qulay.</p>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <svg class="search-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="Vosita qidiring..." oninput="filterTools()">
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-n sn1">8+</div><div class="stat-l">Vositalar</div></div>
+    <div class="stat"><div class="stat-n sn2">100%</div><div class="stat-l">Bepul</div></div>
+    <div class="stat"><div class="stat-n sn3">0</div><div class="stat-l">Reklama</div></div>
+  </div>
+
+  <!-- ACTIVE PANEL -->
+  <div class="tool-panel" id="toolPanel">
+    <div class="panel-header">
+      <div class="panel-title" id="panelTitle"></div>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div id="panelContent"></div>
+  </div>
+
+  <!-- TOOLS -->
+  <div class="sec-head" id="toolsSection"><div class="sec-label">Barcha vositalar</div><div class="sec-line"></div></div>
+  <div class="tools-grid" id="toolsGrid">
+
+    <div class="tool-card cp" onclick="openTool('translate')">
+      <div class="glow"></div>
+      <div class="t-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 5h12M9 3v2m-4 4a8 8 0 008 8M7 11a8 8 0 008 8M21 21l-5-5"/><path d="M16 8s1.5 2 1.5 4-1.5 4-1.5 4"/></svg></div>
+      <h3>Matn Tarjimoni</h3>
+      <p>O'zbek, Rus, Ingliz va boshqa tillarga tarjima</p>
+      <span class="t-tag">Tarjima</span>
+      <svg class="t-arrow" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </div>
+
+    <div class="tool-card ct" onclick="openTool('calc')">
+      <div class="glow"></div>
+      <div class="t-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg></div>
+      <h3>Kalkulyator</h3>
+      <p>Oddiy va ilmiy hisob-kitoblar bir joyda</p>
+      <span class="t-tag">Hisob</span>
+      <svg class="t-arrow" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </div>
+
+    <div class="tool-card ca" onclick="openTool('currency')">
+      <div class="glow"></div>
+      <div class="t-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v2m0 8v2M8 12h8"/></svg></div>
+      <h3>Valyuta Konvertor</h3>
+      <p>So'm, Dollar, Rubl va Yevro kurslari</p>
+      <span class="t-tag">Moliya</span>
+      <svg class="t-arrow" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </div>
+
+    <div class="tool-card cb" onclick="openTool('password')">
+      <div class="glow"></div>
+      <div class="t-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+      <h3>Parol Generator</h3>
+      <p>Xavfsiz va kuchli parollar bir zumda</p>
+      <span class="t-tag">Xavfsizlik</span>
+      <svg class="t-arrow" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </div>
+
+    <div class="tool-card cr" onclick="openTool('qr')">
+      <div class="glow"></div>
+      <div class="t-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="5" y="5" width="3" height="3" fill="currentColor" stroke="none"/><rect x="16" y="5" width="3" height="3" fill="currentColor" stroke="none"/><rect x="5" y="16" width="3" height="3" fill="currentColor" stroke="none"/><path d="M14 14h3v3m0 4h4m-4 0v-4"/></svg></div>
+      <h3>QR Kod Generator</h3>
+      <p>Link yoki matndan QR kod yarating</p>
+      <span class="t-tag">Vosita</span>
+      <svg class="t-arrow" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </div>
+
+    <div class="tool-card cg" onclick="openTool('age')">
+      <div class="glow"></div>
+      <div class="t-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+      <h3>Yosh Kalkulyatori</h3>
+      <p>Tug'ilgan sanadan aniq yoshingizni biling</p>
+      <span class="t-tag">Vaqt</span>
+      <svg class="t-arrow" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </div>
+
+    <div class="tool-card ct" onclick="openTool('bmi')">
+      <div class="glow"></div>
+      <div class="t-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a5 5 0 110 10A5 5 0 0112 2zM4 22v-2a8 8 0 0116 0v2"/></svg></div>
+      <h3>BMI Kalkulyator</h3>
+      <p>Tana massa indeksini hisoblang va tahlil qiling</p>
+      <span class="t-tag">Sog'liq</span>
+      <svg class="t-arrow" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </div>
+
+    <div class="tool-card cp" onclick="openTool('color')">
+      <div class="glow"></div>
+      <div class="t-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 20a6 6 0 01-6-6c0-3 2-6 6-6s6 2.688 6 6a6 6 0 01-6 6z"/></svg></div>
+      <h3>Rang Konvertor</h3>
+      <p>HEX, RGB, HSL formatlar o'rtasida konvertatsiya</p>
+      <span class="t-tag">Dizayn</span>
+      <svg class="t-arrow" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Siroj<span class="dot">.</span>Tools</div>
+    <div class="footer-links">
+      <a href="#">Bosh sahifa</a>
+      <a href="#">Vositalar</a>
+      <a href="#">Haqida</a>
+      <a href="#">Aloqa</a>
+    </div>
+    <div class="footer-copy">© 2026 Все права защищены</div>
+    <div class="footer-made">Yaratuvchi: <span>Sirojbek</span> · siroj-six.vercel.app</div>
+    <br>
+  </footer>
 </div>
 
+<!-- QR library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <script>
-const currencies = {
-    USD:"🇺🇸",
-    EUR:"🇪🇺",
-    RUB:"🇷🇺",
-    GBP:"🇬🇧",
-    KZT:"🇰🇿",
-    CNY:"🇨🇳"
-};
+// ─── UTILS ───────────────────────────────────────────
+function scrollToTools(){document.getElementById('toolsSection').scrollIntoView({behavior:'smooth'})}
 
-async function loadRates(){
-    const res = await fetch("https://open.er-api.com/v6/latest/UZS");
-    const data = await res.json();
-
-    let html = "";
-
-    for(let cur in currencies){
-
-        let value = (1 / data.rates[cur]).toFixed(2);
-
-        html += `
-        <div class="card">
-            <div class="left">
-                <span>${currencies[cur]}</span>
-                <span class="currency">${cur}</span>
-            </div>
-
-            <div class="rate">
-                ${value} UZS
-            </div>
-        </div>
-        `;
-    }
-
-    document.getElementById("rates").innerHTML = html;
+function filterTools(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.tool-card').forEach(c=>{
+    c.style.display=c.innerText.toLowerCase().includes(q)?'':'none';
+  });
 }
 
-loadRates();
+function closePanel(){
+  const p=document.getElementById('toolPanel');
+  p.classList.remove('active');
+  setTimeout(()=>p.style.display='none',10);
+}
 
-setInterval(loadRates, 60000);
+function openTool(name){
+  const p=document.getElementById('toolPanel');
+  p.style.display='block';
+  setTimeout(()=>p.classList.add('active'),10);
+  p.scrollIntoView({behavior:'smooth',block:'start'});
+  const titles={
+    translate:'🌐 Matn Tarjimoni',calc:'🧮 Kalkulyator',currency:'💱 Valyuta Konvertor',
+    password:'🔐 Parol Generator',qr:'📱 QR Kod Generator',age:'🎂 Yosh Kalkulyatori',
+    bmi:'💪 BMI Kalkulyator',color:'🎨 Rang Konvertor'
+  };
+  document.getElementById('panelTitle').textContent=titles[name]||name;
+  const renders={
+    translate:renderTranslate,calc:renderCalc,currency:renderCurrency,
+    password:renderPassword,qr:renderQR,age:renderAge,bmi:renderBMI,color:renderColor
+  };
+  if(renders[name]) renders[name]();
+}
+
+function copyText(el,btn){
+  const txt=document.getElementById(el).innerText||document.getElementById(el).value;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const b=document.getElementById(btn);
+    const orig=b.textContent;b.textContent='✓ Nusxalandi!';
+    setTimeout(()=>b.textContent=orig,2000);
+  });
+}
+
+// ─── TRANSLATE ───────────────────────────────────────
+const LANGS=[
+  {v:'uz',l:"O'zbek"},{v:'ru',l:'Русский'},{v:'en',l:'English'},
+  {v:'tr',l:'Türkçe'},{v:'ar',l:'العربية'},{v:'de',l:'Deutsch'},
+  {v:'fr',l:'Français'},{v:'zh',l:'中文'},{v:'ja',l:'日本語'}
+];
+function langOptions(sel='en'){
+  return LANGS.map(l=>`<option value="${l.v}"${l.v===sel?' selected':''}>${l.l}</option>`).join('');
+}
+function renderTranslate(){
+  document.getElementById('panelContent').innerHTML=`
+    <div class="lang-row">
+      <div class="field" style="margin:0"><label>Asl til</label><select id="tFrom">${langOptions('uz')}</select></div>
+      <button class="swap-btn" onclick="swapLangs()" title="Almashtirish">⇄</button>
+      <div class="field" style="margin:0"><label>Tarjima tili</label><select id="tTo">${langOptions('ru')}</select></div>
+    </div>
+    <div class="field"><label>Matn kiriting</label><textarea id="tInput" placeholder="Tarjima qilmoqchi bo'lgan matningizni yozing..." rows="4"></textarea></div>
+    <button class="btn" onclick="doTranslate()">Tarjima qilish →</button>
+    <div id="tResult" class="result-box" style="display:none"></div>
+    <button class="btn btn-ghost btn-sm copy-btn" id="tCopyBtn" style="display:none" onclick="copyText('tResult','tCopyBtn')">📋 Nusxalash</button>
+  `;
+}
+function swapLangs(){
+  const f=document.getElementById('tFrom'),t=document.getElementById('tTo');
+  [f.value,t.value]=[t.value,f.value];
+}
+async function doTranslate(){
+  const text=document.getElementById('tInput').value.trim();
+  const from=document.getElementById('tFrom').value;
+  const to=document.getElementById('tTo').value;
+  if(!text)return;
+  const r=document.getElementById('tResult');
+  r.style.display='block';r.textContent='Tarjima qilinmoqda...';
+  document.getElementById('tCopyBtn').style.display='none';
+  try{
+    const url=`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`;
+    const res=await fetch(url);
+    const d=await res.json();
+    r.textContent=d.responseData.translatedText||'Tarjima topilmadi';
+    document.getElementById('tCopyBtn').style.display='inline-block';
+  }catch(e){r.textContent='Xatolik yuz berdi. Internet aloqasini tekshiring.'}
+}
+
+// ─── CALCULATOR ──────────────────────────────────────
+let calcExpr='',calcNum='0';
+function renderCalc(){
+  document.getElementById('panelContent').innerHTML=`
+    <div class="calc-display">
+      <div class="calc-expr" id="cExpr"></div>
+      <div class="calc-num" id="cNum">0</div>
+    </div>
+    <div class="calc-grid">
+      ${[
+        ['C','','%','÷'],
+        ['7','8','9','×'],
+        ['4','5','6','−'],
+        ['1','2','3','+'],
+        ['±','0','.','=']
+      ].map(row=>row.map((b,i)=>{
+        let cls='c-btn';
+        if(b==='C')cls+=' clear';
+        else if(['÷','×','−','+','%'].includes(b))cls+=' op';
+        else if(b==='=')cls+=' eq';
+        const span=row.length===4&&b==='0'?'':'' ;
+        return `<button class="${cls}" style="${b==='0'&&row.indexOf(b)===1?'grid-column:span 1':''}" onclick="calcPress('${b}')">${b}</button>`;
+      }).join('')).join('')}
+    </div>
+  `;
+}
+function calcPress(b){
+  const n=document.getElementById('cNum'),e=document.getElementById('cExpr');
+  if(b==='C'){calcExpr='';calcNum='0';n.textContent='0';e.textContent='';return}
+  if(b==='='){
+    try{
+      const expr=calcExpr.replace(/÷/g,'/').replace(/×/g,'*').replace(/−/g,'-');
+      const res=Function('"use strict";return('+expr+')')();
+      e.textContent=calcExpr+'=';
+      calcNum=String(parseFloat(res.toFixed(10)));
+      n.textContent=calcNum;calcExpr='';
+    }catch{n.textContent='Xato';calcExpr='';calcNum='0'}
+    return;
+  }
+  if(b==='±'){calcNum=String(-parseFloat(calcNum));n.textContent=calcNum;return}
+  if(b==='%'){calcNum=String(parseFloat(calcNum)/100);n.textContent=calcNum;return}
+  if(['÷','×','−','+'].includes(b)){
+    calcExpr=(calcExpr||calcNum)+b;e.textContent=calcExpr;calcNum='0';n.textContent='0';return;
+  }
+  if(b==='.'){
+    if(calcNum.includes('.'))return;
+    calcNum+='.';n.textContent=calcNum;return;
+  }
+  calcNum=calcNum==='0'?b:calcNum+b;
+  n.textContent=calcNum;
+}
+
+// ─── CURRENCY ────────────────────────────────────────
+const RATES={USD:1,UZS:12600,RUB:92,EUR:0.92,GBP:0.79,KZT:450,TRY:32,CNY:7.2,JPY:149};
+function renderCurrency(){
+  const curr=Object.keys(RATES);
+  const opts=curr.map(c=>`<option value="${c}">${c}</option>`).join('');
+  document.getElementById('panelContent').innerHTML=`
+    <div class="row2">
+      <div class="field"><label>Miqdor</label><input type="number" id="cAmount" value="1" oninput="convertCurr()"></div>
+      <div class="field"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Dan</label><select id="cFrom" onchange="convertCurr()">${opts.replace('<option value="USD">','<option value="USD" selected>')}</select></div>
+      <div class="field"><label>Ga</label><select id="cTo" onchange="convertCurr()">${opts.replace('<option value="UZS">','<option value="UZS" selected>')}</select></div>
+    </div>
+    <div class="result-box" id="cResult">Natija bu yerda ko'rinadi</div>
+    <p style="margin-top:12px;font-size:12px;color:var(--muted)">* Kurslar taxminiy. Rasmiy kurs uchun CBU.uz saytiga murojaat qiling.</p>
+  `;
+  convertCurr();
+}
+function convertCurr(){
+  const amt=parseFloat(document.getElementById('cAmount').value)||0;
+  const from=document.getElementById('cFrom').value;
+  const to=document.getElementById('cTo').value;
+  const inUSD=amt/RATES[from];
+  const result=inUSD*RATES[to];
+  document.getElementById('cResult').textContent=
+    `${amt.toLocaleString()} ${from} = ${result.toLocaleString('uz-UZ',{maximumFractionDigits:2})} ${to}`;
+}
+
+// ─── PASSWORD ────────────────────────────────────────
+function renderPassword(){
+  document.getElementById('panelContent').innerHTML=`
+    <div class="field">
+      <label>Uzunlik: <span class="range-val" id="pwLenVal">16</span></label>
+      <input type="range" id="pwLen" min="4" max="64" value="16" oninput="document.getElementById('pwLenVal').textContent=this.value;genPw()">
+    </div>
+    <div class="pw-checks">
+      <label class="pw-check"><input type="checkbox" id="pwUpper" checked onchange="genPw()"> A–Z katta harflar</label>
+      <label class="pw-check"><input type="checkbox" id="pwLower" checked onchange="genPw()"> a–z kichik harflar</label>
+      <label class="pw-check"><input type="checkbox" id="pwNum" checked onchange="genPw()"> 0–9 raqamlar</label>
+      <label class="pw-check"><input type="checkbox" id="pwSym" onchange="genPw()"> !@#$ belgilar</label>
+    </div>
+    <div class="result-box" id="pwResult" style="font-family:monospace;font-size:15px;letter-spacing:1px"></div>
+    <div class="strength-bar"><div class="strength-fill" id="pwStrength" style="width:0%"></div></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px" id="pwStrLabel"></div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="btn" onclick="genPw()">🔄 Yangi parol</button>
+      <button class="btn btn-ghost" id="pwCopyBtn" onclick="copyText('pwResult','pwCopyBtn')">📋 Nusxalash</button>
+    </div>
+  `;
+  genPw();
+}
+function genPw(){
+  const len=parseInt(document.getElementById('pwLen').value);
+  let chars='';
+  if(document.getElementById('pwUpper').checked)chars+='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if(document.getElementById('pwLower').checked)chars+='abcdefghijklmnopqrstuvwxyz';
+  if(document.getElementById('pwNum').checked)chars+='0123456789';
+  if(document.getElementById('pwSym').checked)chars+='!@#$%^&*()_+-=[]{}';
+  if(!chars)chars='abcdefghijklmnopqrstuvwxyz';
+  let pw='';for(let i=0;i<len;i++)pw+=chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('pwResult').textContent=pw;
+  const checks=[document.getElementById('pwUpper').checked,document.getElementById('pwLower').checked,
+    document.getElementById('pwNum').checked,document.getElementById('pwSym').checked];
+  const score=checks.filter(Boolean).length+(len>=12?1:0)+(len>=20?1:0);
+  const labels=['','Juda zaif','Zaif','O\'rtacha','Yaxshi','Kuchli','Juda kuchli'];
+  const colors=['','#ff5f7e','#ff5f7e','#ffa940','#ffa940','#00c9a7','#6c5fff'];
+  const pct=Math.min(100,score*16);
+  document.getElementById('pwStrength').style.width=pct+'%';
+  document.getElementById('pwStrength').style.background=colors[score]||colors[5];
+  document.getElementById('pwStrLabel').textContent='Kuch darajasi: '+(labels[score]||'Kuchli');
+}
+
+// ─── QR ──────────────────────────────────────────────
+function renderQR(){
+  document.getElementById('panelContent').innerHTML=`
+    <div class="field"><label>Matn yoki link</label><input type="text" id="qrInput" placeholder="https://siroj-six.vercel.app" oninput="genQR()"></div>
+    <div class="row2">
+      <div class="field"><label>O'lcham</label><select id="qrSize" onchange="genQR()">
+        <option value="128">Kichik (128px)</option>
+        <option value="180" selected>O'rta (180px)</option>
+        <option value="256">Katta (256px)</option>
+      </select></div>
+    </div>
+    <div id="qr-output"></div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="downloadQR()">⬇ QR yuklab olish</button>
+  `;
+  document.getElementById('qrInput').value='https://siroj-six.vercel.app';
+  genQR();
+}
+let qrObj=null;
+function genQR(){
+  const txt=document.getElementById('qrInput').value||'https://siroj-six.vercel.app';
+  const sz=parseInt(document.getElementById('qrSize').value);
+  const out=document.getElementById('qr-output');
+  out.innerHTML='';
+  qrObj=new QRCode(out,{text:txt,width:sz,height:sz,colorDark:'#ece9ff',colorLight:'#0f0f1a',correctLevel:QRCode.CorrectLevel.H});
+}
+function downloadQR(){
+  const canvas=document.querySelector('#qr-output canvas');
+  if(!canvas)return;
+  const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='qr-kod.png';a.click();
+}
+
+// ─── AGE ─────────────────────────────────────────────
+function renderAge(){
+  document.getElementById('panelContent').innerHTML=`
+    <div class="field"><label>Tug'ilgan sanangiz</label><input type="date" id="ageInput" onchange="calcAge()"></div>
+    <button class="btn" onclick="calcAge()">Hisoblash →</button>
+    <div id="ageResult" style="display:none">
+      <div class="age-cards" id="ageCards"></div>
+      <div class="result-box success" id="ageFull" style="margin-top:16px;text-align:center"></div>
+    </div>
+  `;
+  const d=new Date();d.setFullYear(d.getFullYear()-25);
+  document.getElementById('ageInput').value=d.toISOString().split('T')[0];
+  calcAge();
+}
+function calcAge(){
+  const val=document.getElementById('ageInput').value;if(!val)return;
+  const b=new Date(val),n=new Date();
+  if(b>n)return;
+  let y=n.getFullYear()-b.getFullYear(),m=n.getMonth()-b.getMonth(),d=n.getDate()-b.getDate();
+  if(d<0){m--;const prev=new Date(n.getFullYear(),n.getMonth(),0);d+=prev.getDate()}
+  if(m<0){y--;m+=12}
+  const totalDays=Math.floor((n-b)/86400000);
+  const totalHours=Math.floor((n-b)/3600000);
+  document.getElementById('ageCards').innerHTML=`
+    <div class="age-card"><div class="age-card-n">${y}</div><div class="age-card-l">Yil</div></div>
+    <div class="age-card"><div class="age-card-n">${m}</div><div class="age-card-l">Oy</div></div>
+    <div class="age-card"><div class="age-card-n">${d}</div><div class="age-card-l">Kun</div></div>
+  `;
+  document.getElementById('ageFull').textContent=
+    `Jami: ${totalDays.toLocaleString()} kun yoki ${totalHours.toLocaleString()} soat yashagansiz`;
+  document.getElementById('ageResult').style.display='block';
+}
+
+// ─── BMI ─────────────────────────────────────────────
+function renderBMI(){
+  document.getElementById('panelContent').innerHTML=`
+    <div class="row2">
+      <div class="field"><label>Bo'y (sm)</label><input type="number" id="bmiH" placeholder="170" oninput="calcBMI()"></div>
+      <div class="field"><label>Vazn (kg)</label><input type="number" id="bmiW" placeholder="70" oninput="calcBMI()"></div>
+    </div>
+    <button class="btn" onclick="calcBMI()">Hisoblash →</button>
+    <div id="bmiResult" style="display:none">
+      <div class="bmi-result-big" id="bmiNum"></div>
+      <div class="bmi-label" id="bmiLabel"></div>
+      <div class="bmi-scale"><div class="bmi-pointer" id="bmiPtr"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px">
+        <span>18.5 Kam</span><span>25 Normal</span><span>30 Ortiq</span><span>35+</span>
+      </div>
+      <div class="result-box" id="bmiAdvice" style="margin-top:16px"></div>
+    </div>
+  `;
+}
+function calcBMI(){
+  const h=parseFloat(document.getElementById('bmiH').value)/100;
+  const w=parseFloat(document.getElementById('bmiW').value);
+  if(!h||!w||h<=0||w<=0)return;
+  const bmi=w/(h*h);
+  let label,advice,color;
+  if(bmi<18.5){label='Ozg\'in';advice='Og\'irligingiz me\'yordan past. Mutaxassis bilan maslahatlashing.';color='#4d9fff'}
+  else if(bmi<25){label='Normal ✓';advice='Ajoyib! Og\'irligingiz ideal me\'yorda. Sog\'lom turmush tarzini davom eting.';color='#00c9a7'}
+  else if(bmi<30){label='Ortiqcha';advice='Og\'irligingiz biroz ortiq. Jismoniy faoliyat va to\'g\'ri ovqatlanish tavsiya etiladi.';color='#ffa940'}
+  else{label='Semirish';advice='Sog\'liq uchun xavfli daraja. Shifokor bilan maslahatlashishni tavsiya qilamiz.';color='#ff5f7e'}
+  document.getElementById('bmiNum').textContent=bmi.toFixed(1);
+  document.getElementById('bmiNum').style.color=color;
+  document.getElementById('bmiLabel').textContent=label;
+  document.getElementById('bmiLabel').style.color=color;
+  document.getElementById('bmiAdvice').textContent=advice;
+  const pct=Math.min(100,Math.max(0,(bmi-10)/30*100));
+  document.getElementById('bmiPtr').style.left=pct+'%';
+  document.getElementById('bmiResult').style.display='block';
+}
+
+// ─── COLOR ───────────────────────────────────────────
+const SWATCHES=['#6c5fff','#00c9a7','#ff5f7e','#ffa940','#4d9fff','#52c41a','#ff6b6b','#a855f7','#f59e0b','#06b6d4','#ec4899','#ffffff'];
+function renderColor(){
+  document.getElementById('panelContent').innerHTML=`
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      <input type="color" id="colorPicker" value="#6c5fff" oninput="updateColor(this.value)" style="width:56px;height:56px;border-radius:14px;cursor:pointer;padding:2px;border:1px solid var(--border2);background:none">
+      <div style="flex:1">
+        <div class="color-preview" id="colorPreview" style="background:#6c5fff;height:56px"></div>
+      </div>
+    </div>
+    <div class="row3">
+      <div class="field"><label>HEX</label><input type="text" id="cHex" value="#6c5fff" oninput="fromHex()"></div>
+      <div class="field"><label>RGB</label><input type="text" id="cRgb" readonly></div>
+      <div class="field"><label>HSL</label><input type="text" id="cHsl" readonly></div>
+    </div>
+    <div class="color-swatches" id="swatches"></div>
+  `;
+  const sw=document.getElementById('swatches');
+  SWATCHES.forEach(c=>{
+    const d=document.createElement('div');
+    d.className='swatch';d.style.background=c;
+    d.onclick=()=>{document.getElementById('colorPicker').value=c;updateColor(c)};
+    sw.appendChild(d);
+  });
+  updateColor('#6c5fff');
+}
+function hexToRgb(h){
+  const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h);
+  return r?{r:parseInt(r[1],16),g:parseInt(r[2],16),b:parseInt(r[3],16)}:null;
+}
+function rgbToHsl(r,g,b){
+  r/=255;g/=255;b/=255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if(max===min){h=s=0}else{
+    const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;default:h=((r-g)/d+4)/6}
+  }
+  return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};
+}
+function updateColor(hex){
+  if(!/^#[0-9a-f]{6}$/i.test(hex))return;
+  document.getElementById('colorPreview').style.background=hex;
+  document.getElementById('cHex').value=hex;
+  const rgb=hexToRgb(hex);
+  if(!rgb)return;
+  document.getElementById('cRgb').value=`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+  const hsl=rgbToHsl(rgb.r,rgb.g,rgb.b);
+  document.getElementById('cHsl').value=`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+}
+function fromHex(){
+  const v=document.getElementById('cHex').value;
+  if(/^#[0-9a-f]{6}$/i.test(v)){document.getElementById('colorPicker').value=v;updateColor(v)}
+}
 </script>
-
 </body>
 </html>
-```
