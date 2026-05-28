@@ -1,10 +1,135 @@
+```html
 <!DOCTYPE html>
-<html>
+<html lang="uz">
 <head>
-  <title>Siroj Site</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dollar Kurs UZS</title>
+
+<style>
+body{
+    margin:0;
+    padding:0;
+    background:#050505;
+    font-family:Arial,sans-serif;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:350px;
+    background:#0f0f0f;
+    border:1px solid #1f1f1f;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 0 25px rgba(0,255,255,0.2);
+}
+
+h1{
+    text-align:center;
+    color:#00ffff;
+    margin-bottom:25px;
+}
+
+.card{
+    background:#141414;
+    border-radius:15px;
+    padding:15px;
+    margin-bottom:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    transition:0.3s;
+    border:1px solid #222;
+}
+
+.card:hover{
+    transform:scale(1.03);
+    box-shadow:0 0 15px rgba(0,255,255,0.3);
+}
+
+.left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:20px;
+}
+
+.currency{
+    font-weight:bold;
+}
+
+.rate{
+    color:#00ff99;
+    font-size:18px;
+}
+
+.update{
+    text-align:center;
+    color:gray;
+    margin-top:10px;
+    font-size:13px;
+}
+</style>
 </head>
-<body style="background:black;color:white;text-align:center;margin-top:100px;font-family:sans-serif;">
-  <h1>Salom Sirojbek 👋</h1>
-  <p>Mening birinchi tekin saytim</p>
+
+<body>
+
+<div class="container">
+    <h1>💵 Valyuta Kurslari</h1>
+
+    <div id="rates"></div>
+
+    <div class="update">
+        24/7 avtomatik yangilanadi
+    </div>
+</div>
+
+<script>
+const currencies = {
+    USD:"🇺🇸",
+    EUR:"🇪🇺",
+    RUB:"🇷🇺",
+    GBP:"🇬🇧",
+    KZT:"🇰🇿",
+    CNY:"🇨🇳"
+};
+
+async function loadRates(){
+    const res = await fetch("https://open.er-api.com/v6/latest/UZS");
+    const data = await res.json();
+
+    let html = "";
+
+    for(let cur in currencies){
+
+        let value = (1 / data.rates[cur]).toFixed(2);
+
+        html += `
+        <div class="card">
+            <div class="left">
+                <span>${currencies[cur]}</span>
+                <span class="currency">${cur}</span>
+            </div>
+
+            <div class="rate">
+                ${value} UZS
+            </div>
+        </div>
+        `;
+    }
+
+    document.getElementById("rates").innerHTML = html;
+}
+
+loadRates();
+
+setInterval(loadRates, 60000);
+</script>
+
 </body>
 </html>
+```
